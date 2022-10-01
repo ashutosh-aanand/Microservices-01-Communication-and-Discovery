@@ -35,8 +35,9 @@ public class CatalogResource {
         // as a list of Catalog item (adding dummy data for now)
 
         List<CatalogItem> response = ratings.stream().map(rating -> {
-            MovieResponse movie = restTemplate.getForObject("http://localhost:8083/movies/" + rating.getMovieId(), MovieResponse.class);
-            return new CatalogItem(movie.getName(), "sample description", rating.getRating());
+            String movieId = rating.getMovieId();
+            MovieResponse movieResponse = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, MovieResponse.class);
+            return new CatalogItem(movieResponse.getName(), "sample description", rating.getRating());
         }).collect(Collectors.toList());
 
         return response;
