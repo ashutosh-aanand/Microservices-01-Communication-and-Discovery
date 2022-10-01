@@ -1,14 +1,15 @@
 package com.learn.moviecatalogservice.resources;
 
 import com.learn.moviecatalogservice.models.CatalogItem;
+import com.learn.moviecatalogservice.models.MovieResponse;
 import com.learn.moviecatalogservice.models.RatingResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,9 @@ public class CatalogResource {
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
+        RestTemplate restTemplate = new RestTemplate();
+
+
         // get all rated movies from ratings data service -> it will have movie ids
         // creating a dummy list for now
         List<RatingResponse> ratings = Arrays.asList(
@@ -26,12 +30,14 @@ public class CatalogResource {
                 new RatingResponse("4329", 5)
         );
 
-        // for each movie id call movie info service and get details
+        // for each movie id in the ratings, call movie info service and get details
         // add movie info and rating to Catalog item and return response
         // as a list of Catalog item (adding dummy data for now)
-        List<CatalogItem> response =
-                ratings.stream().map(rating -> new CatalogItem("3 idiots", "engineering life", 5))
-                .collect(Collectors.toList());
+
+        List<CatalogItem> response = ratings.stream().map(rating -> {
+            MovieResponse movie = restTemplate.getForObject("http://localhost:8083/movies/" + rating.getMovieId(), MovieResponse.class);
+            return new CatalogItem(movie.getName(), "sample description", rating.getRating());
+        }).collect(Collectors.toList());
 
         return response;
     }
@@ -40,4 +46,7 @@ public class CatalogResource {
 /*
 new things:
 * Collections.singletonList()
+* "RestTemplate" fetches the response as json string which needs to be converted to an object
+so, we are passing a class (having same keys as sent from the called service) as 2nd argument
+- but there is an error here, the class passed must have "an empty constructor", so lets create it.
  */
