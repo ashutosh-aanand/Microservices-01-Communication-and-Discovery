@@ -33,15 +33,15 @@ public class CatalogResource {
         UserRatingResponse ratings = restTemplate.getForObject("http://localhost:8082/ratings/users/" + userId, UserRatingResponse.class);
 
         // for each movie id in the ratings, call movie info service and get details
-        // add movie info and rating to Catalog item and return response
-        // as a list of Catalog item (adding dummy data for now)
-
         List<CatalogItem> response = ratings.getUserRating().stream().map(rating -> {
             String movieId = rating.getMovieId();
             MovieResponse movieResponse = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, MovieResponse.class);
+
+            // add movie info and rating to Catalog item and create a list of CatalogItem
             return new CatalogItem(movieResponse.getName(), "sample description", rating.getRating());
         }).collect(Collectors.toList());
 
+        // return response as a list of CatalogItem objects
         return response;
     }
 }
@@ -58,6 +58,8 @@ Things to fix:
 - new restTemplate getting created for every request
     => create a single instance of RestTemplate class and use it whenever required
     => create its Bean and Autowire it where required [done]
+- our API returning a list rather than the list wrapped in an object.
+
 -
 
 * webclient
