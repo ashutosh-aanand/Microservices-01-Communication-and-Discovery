@@ -50,4 +50,9 @@ new things:
 * "RestTemplate" fetches the response as json string which needs to be converted to an object
 so, we are passing a class (having same keys as sent from the called service) as 2nd argument
 - but there is an error here, the class passed must have "an empty constructor", so lets create it.
+
+Things to fix:
+- hardcoded url
+- new restTemplate getting created for every request
+-
  */
