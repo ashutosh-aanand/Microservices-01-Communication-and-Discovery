@@ -22,10 +22,11 @@ public class CatalogResource {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    WebClient.Builder webClientBuilder;
+
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
-
-        WebClient.Builder webClientBuilder = WebClient.builder();
 
         // get all rated movies from ratings data service -> it will have movie ids
         // creating a dummy list for now
