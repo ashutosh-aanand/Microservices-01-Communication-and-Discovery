@@ -15,6 +15,14 @@ public class CatalogResource {
 
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
+
+        // get all rated movies from ratings data service -> it will have movie ids
+        // creating a dummy list for now
+
+        // for each movie id call movie info service and get details
+        // add movie info and rating to Catalog item and return response
+        // as a list of Catalog item
+
         return Collections.singletonList(
                 new CatalogItem("3 idiots", "engineering life", 5)
         );
