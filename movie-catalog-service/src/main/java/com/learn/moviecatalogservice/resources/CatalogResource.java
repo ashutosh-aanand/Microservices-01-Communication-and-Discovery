@@ -3,6 +3,7 @@ package com.learn.moviecatalogservice.resources;
 import com.learn.moviecatalogservice.models.CatalogItem;
 import com.learn.moviecatalogservice.models.MovieResponse;
 import com.learn.moviecatalogservice.models.RatingResponse;
+import com.learn.moviecatalogservice.models.UserRatingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +30,13 @@ public class CatalogResource {
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
         // get all rated movies from ratings data service -> it will have movie ids
-        List<RatingResponse> ratings = List.of(restTemplate.getForObject("http://localhost:8082/ratings/users/" + userId, RatingResponse[].class));
+        UserRatingResponse ratings = restTemplate.getForObject("http://localhost:8082/ratings/users/" + userId, UserRatingResponse.class);
 
         // for each movie id in the ratings, call movie info service and get details
         // add movie info and rating to Catalog item and return response
         // as a list of Catalog item (adding dummy data for now)
 
-        List<CatalogItem> response = ratings.stream().map(rating -> {
+        List<CatalogItem> response = ratings.getUserRating().stream().map(rating -> {
             String movieId = rating.getMovieId();
             MovieResponse movieResponse = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, MovieResponse.class);
             return new CatalogItem(movieResponse.getName(), "sample description", rating.getRating());
@@ -50,7 +51,7 @@ new things:
 * Collections.singletonList()
 * "RestTemplate" fetches the response as json string which needs to be converted to an object
 so, we are passing a class (having same keys as sent from the called service) as 2nd argument
-- but there is an error here, the class passed must have "an empty constructor", so lets create it.
+- but there is an error here, the class passed "must have an empty constructor", so lets create it.
 
 Things to fix:
 - hardcoded url
@@ -72,4 +73,9 @@ MovieResponse movieResponse = webClientBuilder.build()
                     .retrieve()
                     .bodyToMono(MovieResponse.class)
                     .block();
+
+* RestTemplate:
+* to deserialise and consume a list of type RatingResponse, we had to pass "RatingResponse[].class"
+* but now we will deserialise an object of class UserRatingResponse so passed UserRatingResponse.class
+
  */
