@@ -3,6 +3,7 @@ package com.learn.moviecatalogservice.resources;
 import com.learn.moviecatalogservice.models.CatalogItem;
 import com.learn.moviecatalogservice.models.MovieResponse;
 import com.learn.moviecatalogservice.models.RatingResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/catalog")
 public class CatalogResource {
 
+    @Autowired
+    RestTemplate restTemplate;
+
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
-
-        RestTemplate restTemplate = new RestTemplate();
-
 
         // get all rated movies from ratings data service -> it will have movie ids
         // creating a dummy list for now
@@ -54,5 +55,7 @@ so, we are passing a class (having same keys as sent from the called service) as
 Things to fix:
 - hardcoded url
 - new restTemplate getting created for every request
+    => create a single instance of RestTemplate class and use it whenever required
+    => create its Bean and Autowire it where required [done]
 -
  */
