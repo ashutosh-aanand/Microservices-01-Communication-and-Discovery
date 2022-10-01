@@ -18,10 +18,10 @@ public class MovieCatalogServiceApplication {
 		return new RestTemplate();
 	}
 
-	@Bean
-	public WebClient.Builder createWebClientBuilderBean(){
-		return WebClient.builder();
-	}
+//	@Bean
+//	public WebClient.Builder createWebClientBuilderBean(){
+//		return WebClient.builder();
+//	}
 
 }
 /**

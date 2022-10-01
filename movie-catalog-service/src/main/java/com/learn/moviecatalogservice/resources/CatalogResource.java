@@ -22,8 +22,8 @@ public class CatalogResource {
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
-    WebClient.Builder webClientBuilder;
+//    @Autowired
+//    WebClient.Builder webClientBuilder;
 
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
@@ -41,15 +41,7 @@ public class CatalogResource {
 
         List<CatalogItem> response = ratings.stream().map(rating -> {
             String movieId = rating.getMovieId();
-//            MovieResponse movieResponse = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, MovieResponse.class);
-
-            MovieResponse movieResponse = webClientBuilder.build()
-                    .get()
-                    .uri("http://localhost:8083/movies/" + movieId)
-                    .retrieve()
-                    .bodyToMono(MovieResponse.class)
-                    .block();
-
+            MovieResponse movieResponse = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, MovieResponse.class);
             return new CatalogItem(movieResponse.getName(), "sample description", rating.getRating());
         }).collect(Collectors.toList());
 
@@ -78,4 +70,10 @@ Things to fix:
 - but in a blocking way, since our response is not a Mono stream,
 - so even if we make the api call async, it will still behave as blocking.
 - still, lets use it.
+MovieResponse movieResponse = webClientBuilder.build()
+                    .get()
+                    .uri("http://localhost:8083/movies/" + movieId)
+                    .retrieve()
+                    .bodyToMono(MovieResponse.class)
+                    .block();
  */
