@@ -29,11 +29,7 @@ public class CatalogResource {
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
         // get all rated movies from ratings data service -> it will have movie ids
-        // creating a dummy list for now
-        List<RatingResponse> ratings = Arrays.asList(
-                new RatingResponse("1234", 4),
-                new RatingResponse("4329", 5)
-        );
+        List<RatingResponse> ratings = List.of(restTemplate.getForObject("http://localhost:8082/ratings/users/" + userId, RatingResponse[].class));
 
         // for each movie id in the ratings, call movie info service and get details
         // add movie info and rating to Catalog item and return response

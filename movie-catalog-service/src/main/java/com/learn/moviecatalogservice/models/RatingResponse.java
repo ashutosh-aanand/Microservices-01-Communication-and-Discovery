@@ -3,6 +3,8 @@ package com.learn.moviecatalogservice.models;
 public class RatingResponse {
     private String movieId;
     private Integer rating;
+    
+    public RatingResponse(){}
 
     public RatingResponse(String movieId, Integer rating) {
         this.movieId = movieId;
