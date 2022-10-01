@@ -80,4 +80,33 @@ MovieResponse movieResponse = webClientBuilder.build()
 * to deserialise and consume a list of type RatingResponse, we had to pass "RatingResponse[].class"
 * but now we will deserialise an object of class UserRatingResponse so passed UserRatingResponse.class
 
+* Are both the api calls async ?
+    -> NO, they are sync (blocking)
+    -> to make them async, we need to
+        - use reactive programming
+        - use webClient for making the requests
+        - return a stream (Mono or Flux) as a response
+
+* If this microservice is being accessed in a multi-threaded env. do we need to handle any concurrency issues ?
+    - when we deploy an app in servlet container, there are a lot of threads that run in ||el
+    - each request spawns a new thread, and its important for all the objects to be thread-safe
+    - and RestTemplate is "threadsafe"
+    - one call doesn't affect another call
+
+* When to use restTemplate and webClient ?
+    - use webClient for all cases. It is flexible
+    - can be used in both blocking and non-blocking way.
+
+* Is it possible to make these calls to an external api that is not a microservice ?
+    - Yes,
+    - as long the source is producing json payload, it doesn't matter who is producing it
+      and how it is being produced
+    - it can be consumed in the same way
+
+* How to handle security when communicating between microservices ?
+  - many ways
+    - using https
+    - using authentication, we can have the rest call authenticated
+        - eg., by putting the credentials in the header
+
  */
