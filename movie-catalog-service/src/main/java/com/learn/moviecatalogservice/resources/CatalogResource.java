@@ -109,4 +109,30 @@ MovieResponse movieResponse = webClientBuilder.build()
     - using authentication, we can have the rest call authenticated
         - eg., by putting the credentials in the header
 
+-----------------------------------------------------------------------
+## What are we doing wrong ?
+- Hardcoding urls
+
+### Why Hardcoded urls are bad ?
+* as
+    - changes require code updates
+    - dynamic urls in the cloud -> need to accomodate to change
+    - load balancing
+    - Multiple environments -> local, staging, pre-prod/beta, canary, prod
+        -> app needs to be aware of the environment
+
+ As a solution to above, we have concept of Service Discovery.
+
+# Service Discovery
+-------------------
+-> defines how the microservices know what to talk to.
+-> its an abstraction layer(discovery server) between the consumer and producer microservices,
+    which gives the url of the producer service.
+- 2 types:
+    - client side service discovery
+    - server side service discovery
+
+- Spring cloud uses client side service discovery.
+
+
  */
