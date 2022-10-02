@@ -38,7 +38,7 @@ public class CatalogResource {
             MovieResponse movieResponse = restTemplate.getForObject("http://movie-info-service/movies/" + movieId, MovieResponse.class);
 
             // add movie info and rating to Catalog item and create a list of CatalogItem
-            return new CatalogItem(movieResponse.getName(), "sample description", rating.getRating());
+            return new CatalogItem(movieResponse.getName(), movieResponse.getDesc(), rating.getRating());
         }).collect(Collectors.toList());
 
         // return response as a list of CatalogItem objects
