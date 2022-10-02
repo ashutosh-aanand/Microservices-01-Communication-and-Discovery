@@ -30,12 +30,12 @@ public class CatalogResource {
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
         // get all rated movies from ratings data service -> it will have movie ids
-        UserRatingResponse ratings = restTemplate.getForObject("http://localhost:8082/ratings/users/" + userId, UserRatingResponse.class);
+        UserRatingResponse ratings = restTemplate.getForObject("http://ratings-data-service/ratings/users/" + userId, UserRatingResponse.class);
 
         // for each movie id in the ratings, call movie info service and get details
         List<CatalogItem> response = ratings.getUserRating().stream().map(rating -> {
             String movieId = rating.getMovieId();
-            MovieResponse movieResponse = restTemplate.getForObject("http://localhost:8083/movies/" + movieId, MovieResponse.class);
+            MovieResponse movieResponse = restTemplate.getForObject("http://movie-info-service/movies/" + movieId, MovieResponse.class);
 
             // add movie info and rating to Catalog item and create a list of CatalogItem
             return new CatalogItem(movieResponse.getName(), "sample description", rating.getRating());
