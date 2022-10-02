@@ -134,5 +134,9 @@ MovieResponse movieResponse = webClientBuilder.build()
 
 - Spring cloud uses client side service discovery.
 
+More todos:
+* check backward compatibility by add a new key to one of producer service [done]
+* client side load balancing
+* fault tolorence -> using heartbeat
 
  */
