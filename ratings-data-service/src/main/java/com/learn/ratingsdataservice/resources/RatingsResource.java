@@ -2,6 +2,8 @@ package com.learn.ratingsdataservice.resources;
 
 import com.learn.ratingsdataservice.models.Rating;
 import com.learn.ratingsdataservice.models.UserRating;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/ratings")
 public class RatingsResource {
 
+    Logger log = LoggerFactory.getLogger(RatingsResource.class);
+
     @GetMapping("/{movieId}")
     public Rating getMovieRating(@PathVariable("movieId") String movieId){
         return new Rating(movieId, 4);
@@ -21,12 +25,16 @@ public class RatingsResource {
 
     @GetMapping("/users/{userId}")
     public UserRating getUserRatings(@PathVariable("userId") String userId){
+        log.info("Got a request for userId: {}", userId);
         List<Rating> ratings = Arrays.asList(
                 new Rating("tt1187043", 5),
                 new Rating("tt8178634", 4),
                 new Rating("tt10701074", 4)
         );
-        return new UserRating(ratings);
+        UserRating response = new UserRating(ratings);
+
+        log.info("Returning ratings data response: {}", response);
+        return response;
     }
 }
 /*

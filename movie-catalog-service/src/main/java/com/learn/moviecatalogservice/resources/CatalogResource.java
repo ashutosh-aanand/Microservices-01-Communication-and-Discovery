@@ -4,6 +4,8 @@ import com.learn.moviecatalogservice.models.CatalogItem;
 import com.learn.moviecatalogservice.models.MovieResponse;
 import com.learn.moviecatalogservice.models.RatingResponse;
 import com.learn.moviecatalogservice.models.UserRatingResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/catalog")
 public class CatalogResource {
 
+    Logger log = LoggerFactory.getLogger(CatalogResource.class);
+
     @Autowired
     RestTemplate restTemplate;
 
@@ -30,17 +34,22 @@ public class CatalogResource {
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
         // get all rated movies from ratings data service -> it will have movie ids
+        log.info("sending request to ratings-data-service !");
         UserRatingResponse ratings = restTemplate.getForObject("http://ratings-data-service/ratings/users/" + userId, UserRatingResponse.class);
+        log.info("received ratings-data-service response: {}", ratings);
 
         // for each movie id in the ratings, call movie info service and get details
         List<CatalogItem> response = ratings.getUserRating().stream().map(rating -> {
             String movieId = rating.getMovieId();
+            log.info("sending request to movie-info-service for movieId: {}", movieId);
             MovieResponse movieResponse = restTemplate.getForObject("http://movie-info-service/movies/" + movieId, MovieResponse.class);
+            log.info("received movie-info-service response: {}", movieResponse);
 
             // add movie info and rating to Catalog item and create a list of CatalogItem
             return new CatalogItem(movieResponse.getName(), movieResponse.getDesc(), rating.getRating());
         }).collect(Collectors.toList());
 
+        log.info("Returning catalog response: {}", response);
         // return response as a list of CatalogItem objects
         return response;
     }
