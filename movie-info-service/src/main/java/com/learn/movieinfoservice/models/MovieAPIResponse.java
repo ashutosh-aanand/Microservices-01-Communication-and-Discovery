@@ -31,4 +31,12 @@ public class MovieAPIResponse {
     public void setDesc(String desc) {
         this.desc = desc;
     }
+
+    @Override
+    public String toString() {
+        return "MovieAPIResponse{" +
+                "title='" + title + '\'' +
+                ", desc='" + desc + '\'' +
+                '}';
+    }
 }

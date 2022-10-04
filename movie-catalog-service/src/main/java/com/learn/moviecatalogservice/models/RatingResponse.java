@@ -26,4 +26,12 @@ public class RatingResponse {
     public void setRating(Integer rating) {
         this.rating = rating;
     }
+
+    @Override
+    public String toString() {
+        return "RatingResponse{" +
+                "movieId='" + movieId + '\'' +
+                ", rating=" + rating +
+                '}';
+    }
 }

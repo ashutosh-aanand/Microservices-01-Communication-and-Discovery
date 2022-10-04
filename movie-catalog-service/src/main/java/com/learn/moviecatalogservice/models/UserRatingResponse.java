@@ -18,4 +18,11 @@ public class UserRatingResponse {
     public void setUserRating(List<RatingResponse> userRating) {
         this.userRating = userRating;
     }
+
+    @Override
+    public String toString() {
+        return "UserRatingResponse{" +
+                "userRating=" + userRating +
+                '}';
+    }
 }
