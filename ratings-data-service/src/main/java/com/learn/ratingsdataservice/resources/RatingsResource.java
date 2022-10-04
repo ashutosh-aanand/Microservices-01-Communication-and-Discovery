@@ -22,9 +22,9 @@ public class RatingsResource {
     @GetMapping("/users/{userId}")
     public UserRating getUserRatings(@PathVariable("userId") String userId){
         List<Rating> ratings = Arrays.asList(
-                new Rating("1234", 4),
-                new Rating("4329", 5),
-                new Rating("8743", 3)
+                new Rating("tt1187043", 5),
+                new Rating("tt8178634", 4),
+                new Rating("tt10701074", 4)
         );
         return new UserRating(ratings);
     }
