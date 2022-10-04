@@ -33,6 +33,8 @@ public class RatingsResource {
         );
         UserRating response = new UserRating(ratings);
 
+//        Thread.sleep(5000); // just experimenting with timeouts
+
         log.info("Returning ratings data response: {}", response);
         return response;
     }
