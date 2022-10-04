@@ -4,6 +4,7 @@ import com.learn.moviecatalogservice.models.CatalogItem;
 import com.learn.moviecatalogservice.models.MovieResponse;
 import com.learn.moviecatalogservice.models.RatingResponse;
 import com.learn.moviecatalogservice.models.UserRatingResponse;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class CatalogResource {
 //    WebClient.Builder webClientBuilder;
 
     @GetMapping("/{userId}")
+    @HystrixCommand(fallbackMethod = "getFallbackCatalog")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
         // get all rated movies from ratings data service -> it will have movie ids
@@ -52,6 +54,10 @@ public class CatalogResource {
         log.info("Returning catalog response: {}", response);
         // return response as a list of CatalogItem objects
         return response;
+    }
+
+    public List<CatalogItem> getFallbackCatalog(String userId){
+        return Arrays.asList(new CatalogItem("fallback-name", "fallback-desc", 0));
     }
 }
 
