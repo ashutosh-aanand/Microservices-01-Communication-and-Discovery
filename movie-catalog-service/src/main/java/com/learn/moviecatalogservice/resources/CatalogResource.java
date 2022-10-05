@@ -32,23 +32,15 @@ public class CatalogResource {
 //    WebClient.Builder webClientBuilder;
 
     @GetMapping("/{userId}")
-    @HystrixCommand(fallbackMethod = "getFallbackCatalog")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
         // get all rated movies from ratings data service -> it will have movie ids
-        log.info("sending request to ratings-data-service !");
-        UserRatingResponse ratings = restTemplate.getForObject("http://ratings-data-service/ratings/users/" + userId, UserRatingResponse.class);
-        log.info("received ratings-data-service response: {}", ratings);
+        UserRatingResponse ratings = getUserRatings(userId);
 
         // for each movie id in the ratings, call movie info service and get details
         List<CatalogItem> response = ratings.getUserRating().stream().map(rating -> {
             String movieId = rating.getMovieId();
-            log.info("sending request to movie-info-service for movieId: {}", movieId);
-            MovieResponse movieResponse = restTemplate.getForObject("http://movie-info-service/movies/" + movieId, MovieResponse.class);
-            log.info("received movie-info-service response: {}", movieResponse);
-
-            // add movie info and rating to Catalog item and create a list of CatalogItem
-            return new CatalogItem(movieResponse.getName(), movieResponse.getDesc(), rating.getRating());
+            return getCatalogItem(rating, movieId);
         }).collect(Collectors.toList());
 
         log.info("Returning catalog response: {}", response);
@@ -56,9 +48,34 @@ public class CatalogResource {
         return response;
     }
 
-    public List<CatalogItem> getFallbackCatalog(String userId){
-        return Arrays.asList(new CatalogItem("fallback-name", "fallback-desc", 0));
+    @HystrixCommand(fallbackMethod = "getFallbackUserRatings")
+    private UserRatingResponse getUserRatings(String userId) {
+        log.info("sending request to ratings-data-service !");
+        UserRatingResponse ratings = restTemplate.getForObject("http://ratings-data-service/ratings/users/" + userId, UserRatingResponse.class);
+        log.info("received ratings-data-service response: {}", ratings);
+        return ratings;
     }
+
+    @HystrixCommand(fallbackMethod = "getFallbackCatalogItem")
+    private CatalogItem getCatalogItem(RatingResponse rating, String movieId) {
+        log.info("sending request to movie-info-service for movieId: {}", movieId);
+        MovieResponse movieResponse = restTemplate.getForObject("http://movie-info-service/movies/" + movieId, MovieResponse.class);
+        log.info("received movie-info-service response: {}", movieResponse);
+
+        // add movie info and rating to Catalog item and create a list of CatalogItem
+        return new CatalogItem(movieResponse.getName(), movieResponse.getDesc(), rating.getRating());
+    }
+
+    private UserRatingResponse getFallbackUserRatings(String userId) {
+        UserRatingResponse fallbackResponse = new UserRatingResponse();
+        fallbackResponse.setUserRating(Arrays.asList(new RatingResponse("fallback-movie-id", 0)));
+        return fallbackResponse;
+    }
+
+    private CatalogItem getFallbackCatalogItem(RatingResponse rating, String movieId) {
+        return new CatalogItem("fallback-movie-name", "fallback-desc", rating.getRating());
+    }
+
 }
 
 /*
