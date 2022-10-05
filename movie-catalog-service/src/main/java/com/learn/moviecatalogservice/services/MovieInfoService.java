@@ -33,6 +33,13 @@ public class MovieInfoService {
                     @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value = "50"),
                     // how long to break the circuit before trying again (meanwhile send fallbacks)
                     @HystrixProperty(name="circuitBreaker.sleepWindowInMilliseconds", value = "15000")
+            },
+
+    // Implementing Bulkhead pattern
+            threadPoolKey = "movieInfoPool",
+            threadPoolProperties = {
+                    @HystrixProperty(name= "coreSize", value = "15"),
+                    @HystrixProperty(name = "maxQueueSize", value = "10")
             }
     )
     public CatalogItem getCatalogItem(RatingResponse rating, String movieId) {
