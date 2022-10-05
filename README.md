@@ -22,3 +22,15 @@ these 2 must go together
 
 Calling an external API
 - omdbapi
+
+Eureka Dashboard url:
+`http://localhost:8761`
+
+Hystrix Dashboard url:
+`http://localhost:8081/hystrix`
+
+To get hystrix stream:
+`http://localhost:8081/actuator/hystrix.stream`
+
+> [bug] hystrix dashboard is currently not able to connect to our app. Will fix this later.
+
